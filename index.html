@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Trade Checklist</title>
+
+<!-- LINK TO MANIFEST -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS PWA Support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 15px;
+        background: #f6f6f6;
+        margin: 0;
+    }
+    h1, h2 { text-align: center; }
+
+    table {
+        width: 100%;
+        max-width: 600px;
+        margin: 15px auto;
+        background: white;
+        border-collapse: collapse;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+    th, td {
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+    }
+    th { font-size: 1.1em; }
+    .bullish { background: #c6efce; }
+    .bearish { background: #ffc7ce; }
+    input[type="checkbox"] {
+        width: 28px;
+        height: 28px;
+        transform: scale(1.3);
+        cursor: pointer;
+    }
+    .result-cell {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.1em;
+        transition: background 0.3s;
+    }
+    .true-bg { background: #b7e1b0 !important; }
+</style>
+</head>
+<body>
+
+<h1>Trade Checklist</h1>
+
+<!-- Your tables (unchanged) -->
+<!-- BULLISH ENTRY -->
+<table>
+    <tr><th class="bullish">Bullish Entry</th><th class="bullish">Check</th></tr>
+    <tr><td>RSI ≥ 53</td><td><input type="checkbox" class="bullish-entry"></td></tr>
+    <tr><td>Price Close > 50 EMA</td><td><input type="checkbox" class="bullish-entry"></td></tr>
+    <tr><td>Result</td><td id="bullishEntryResult" class="result-cell">FALSE</td></tr>
+</table>
+
+<!-- BEARISH ENTRY -->
+<table>
+    <tr><th class="bearish">Bearish Entry</th><th class="bearish">Check</th></tr>
+    <tr><td>RSI ≤ 31</td><td><input type="checkbox" class="bearish-entry"></td></tr>
+    <tr><td>Price Close < 50 EMA</td><td><input type="checkbox" class="bearish-entry"></td></tr>
+    <tr><td>Result</td><td id="bearishEntryResult" class="result-cell">FALSE</td></tr>
+</table>
+
+<!-- BULLISH EXIT -->
+<table>
+    <tr><th class="bearish">Bullish Exit</th><th class="bearish">Check</th></tr>
+    <tr><td>RSI ≤ 31</td><td><input type="checkbox" class="bullish-exit"></td></tr>
+    <tr><td>Price Close < 50 EMA</td><td><input type="checkbox" class="bullish-exit"></td></tr>
+    <tr><td>Result</td><td id="bullishExitResult" class="result-cell">FALSE</td></tr>
+</table>
+
+<!-- BEARISH EXIT -->
+<table>
+    <tr><th class="bullish">Bearish Exit</th><th class="bullish">Check</th></tr>
+    <tr><td>RSI ≥ 53</td><td><input type="checkbox" class="bearish-exit"></td></tr>
+    <tr><td>Price Close > 50 EMA</td><td><input type="checkbox" class="bearish-exit"></td></tr>
+    <tr><td>Result</td><td id="bearishExitResult" class="result-cell">FALSE</td></tr>
+</table>
+
+<!-- SECONDARY RULES -->
+<h2>2. Secondary Rules</h2>
+
+<table>
+    <tr><th>Rules</th><th>Check</th></tr>
+    <tr><td>Entry/Exit Time (10:16 / 15:16 / 15:30)</td><td><input type="checkbox" class="rules"></td></tr>
+    <tr><td>RSI < 55 or > 29.5</td><td><input type="checkbox" class="rules"></td></tr>
+    <tr><td>ATM IV < 25</td><td><input type="checkbox" class="rules"></td></tr>
+    <tr><td>Result</td><td id="rulesResult" class="result-cell">FALSE</td></tr>
+</table>
+
+<table>
+    <tr><th>Strikes</th><th>Check</th></tr>
+    <tr><td>Sell Delta 10–13</td><td><input type="checkbox" class="strikes"></td></tr>
+    <tr><td>Buy Delta 5–7</td><td><input type="checkbox" class="strikes"></td></tr>
+    <tr><td>OTM ≥ 500</td><td><input type="checkbox" class="strikes"></td></tr>
+    <tr><td>DTE ≥ 14</td><td><input type="checkbox" class="strikes"></td></tr>
+    <tr><td>Result</td><td id="strikesResult" class="result-cell">FALSE</td></tr>
+</table>
+
+<script>
+function updateResult(groupClass, resultId) {
+    const boxes = document.querySelectorAll("." + groupClass);
+    const allChecked = [...boxes].every(cb => cb.checked);
+    const cell = document.getElementById(resultId);
+
+    cell.textContent = allChecked ? "TRUE" : "FALSE";
+    cell.classList.toggle("true-bg", allChecked);
+}
+
+document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.addEventListener("change", function(){
+        updateResult("bullish-entry","bullishEntryResult");
+        updateResult("bearish-entry","bearishEntryResult");
+        updateResult("bullish-exit","bullishExitResult");
+        updateResult("bearish-exit","bearishExitResult");
+        updateResult("rules","rulesResult");
+        updateResult("strikes","strikesResult");
+    });
+});
+
+// Register service worker
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>
