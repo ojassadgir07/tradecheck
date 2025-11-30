@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Trade Checklist</title>
+<title>Trade Check</title>
 
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,9 +18,14 @@
         background: #f6f6f6;
         margin: 0;
         text-align: center;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 
-    h1 { text-align: center; }
+    h1 {
+        margin-bottom: 30px;
+        font-weight: 700;
+    }
 
     /* Home screen buttons */
     .menu-btn {
@@ -34,6 +39,8 @@
         border-radius: 8px;
         cursor: pointer;
         display: block;
+        user-select: none;
+        -webkit-user-select: none;
     }
 
     .green-btn { background: #4caf50; }
@@ -46,7 +53,7 @@
     table {
         width: 100%;
         max-width: 600px;
-        margin: 15px auto;
+        margin: 15px auto 25px;
         background: white;
         border-collapse: collapse;
         border-radius: 6px;
@@ -56,75 +63,102 @@
     th, td {
         padding: 12px 14px;
         border: 1px solid #ddd;
+        vertical-align: middle;
     }
-    th { font-size: 1.1em; }
-    .bullish { background: #c6efce; }
-    .bearish { background: #ffc7ce; }
+    th {
+        font-size: 1.1em;
+    }
+    .bullish {
+        background: #c6efce;
+        font-weight: 700;
+    }
+    .bearish {
+        background: #ffc7ce;
+        font-weight: 700;
+    }
 
     input[type="checkbox"] {
         width: 28px;
         height: 28px;
         transform: scale(1.3);
         cursor: pointer;
+        margin: 0 auto;
+        display: block;
     }
 
     .result-cell {
         text-align: center;
         font-weight: bold;
-        font-size: 1.1em;
+        font-size: 1.15em;
+        user-select: none;
     }
 
-    .true-bg { background: #b7e1b0 !important; }
+    .true-bg {
+        background: #b7e1b0 !important;
+    }
 
-    .back-btn {
-        margin-top: 20px;
-        padding: 12px 20px;
-        font-size: 1.1em;
-        border-radius: 8px;
-        border: none;
-        background: #333;
-        color: white;
+    /* Back arrow top-left */
+    #backArrow {
+        position: fixed;
+        top: 14px;
+        left: 16px;
+        font-size: 2.4em;
+        font-weight: 900;
+        color: #333;
         cursor: pointer;
+        user-select: none;
+        display: none;
+        z-index: 1000;
+    }
+    #backArrow:active {
+        opacity: 0.6;
+    }
+
+    /* Section title styling */
+    #sectionTitle {
+        font-weight: 700;
+        font-size: 1.8em;
+        margin-bottom: 12px;
+    }
+
+    /* Responsive text smaller on narrow screens */
+    @media (max-width: 400px) {
+        .menu-btn {
+            font-size: 1em;
+            padding: 14px;
+        }
+        #sectionTitle {
+            font-size: 1.4em;
+        }
+        input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            transform: scale(1.2);
+        }
     }
 </style>
 </head>
 <body>
 
-<h1>Trade Checklist</h1>
+<h1>Trade Check</h1>
 
-<!-- ------------------------------------------------------------ -->
+<!-- Back arrow top-left -->
+<div id="backArrow" title="Back" aria-label="Back" role="button" tabindex="0">&#8592;</div>
+
 <!-- HOME SCREEN BUTTONS -->
-<!-- ------------------------------------------------------------ -->
-
 <div id="homeScreen">
-
-    <button class="menu-btn green-btn" onclick="openSection('bullishEntry')">
-        Bullish Entry
-    </button>
-
-    <button class="menu-btn red-btn" onclick="openSection('bearishEntry')">
-        Bearish Entry
-    </button>
-
-    <button class="menu-btn red-btn" onclick="openSection('bullishExit')">
-        Bullish Exit
-    </button>
-
-    <button class="menu-btn green-btn" onclick="openSection('bearishExit')">
-        Bearish Exit
-    </button>
-
+    <button class="menu-btn green-btn" onclick="openSection('bullishEntry')">Bullish Entry</button>
+    <button class="menu-btn red-btn" onclick="openSection('bearishEntry')">Bearish Entry</button>
+    <button class="menu-btn red-btn" onclick="openSection('bullishExit')">Bullish Exit</button>
+    <button class="menu-btn green-btn" onclick="openSection('bearishExit')">Bearish Exit</button>
 </div>
 
-<!-- ------------------------------------------------------------ -->
-<!-- PRIMARY RULES SECTION -->
-<!-- ------------------------------------------------------------ -->
-
+<!-- CONTENT AREA -->
 <div id="contentArea" class="hidden">
 
-    <h2 id="sectionTitle"></h2>
+    <div id="sectionTitle"></div>
 
-    <!-- BULLISH ENTRY -->
+    <!-- Primary Rules Tables -->
     <table id="primary-bullishEntry" class="hidden">
         <tr><th class="bullish">Bullish Entry</th><th class="bullish">Check</th></tr>
         <tr><td>RSI ≥ 53</td><td><input type="checkbox" class="bullish-entry"></td></tr>
@@ -132,7 +166,6 @@
         <tr><td>Result</td><td id="bullishEntryResult" class="result-cell">FALSE</td></tr>
     </table>
 
-    <!-- BEARISH ENTRY -->
     <table id="primary-bearishEntry" class="hidden">
         <tr><th class="bearish">Bearish Entry</th><th class="bearish">Check</th></tr>
         <tr><td>RSI ≤ 31</td><td><input type="checkbox" class="bearish-entry"></td></tr>
@@ -140,7 +173,6 @@
         <tr><td>Result</td><td id="bearishEntryResult" class="result-cell">FALSE</td></tr>
     </table>
 
-    <!-- BULLISH EXIT -->
     <table id="primary-bullishExit" class="hidden">
         <tr><th class="bearish">Bullish Exit</th><th class="bearish">Check</th></tr>
         <tr><td>RSI ≤ 31</td><td><input type="checkbox" class="bullish-exit"></td></tr>
@@ -148,7 +180,6 @@
         <tr><td>Result</td><td id="bullishExitResult" class="result-cell">FALSE</td></tr>
     </table>
 
-    <!-- BEARISH EXIT -->
     <table id="primary-bearishExit" class="hidden">
         <tr><th class="bullish">Bearish Exit</th><th class="bullish">Check</th></tr>
         <tr><td>RSI ≥ 53</td><td><input type="checkbox" class="bearish-exit"></td></tr>
@@ -156,83 +187,120 @@
         <tr><td>Result</td><td id="bearishExitResult" class="result-cell">FALSE</td></tr>
     </table>
 
-    <!-- ------------------------------------------------------------ -->
-    <!-- SECONDARY RULES (ONLY FOR ENTRY) -->
-    <!-- ------------------------------------------------------------ -->
-
-    <div id="secondaryRulesArea" class="hidden">
-
+    <!-- Secondary Rules (Entry) -->
+    <div id="secondaryEntryArea" class="hidden">
         <h2>Secondary Rules</h2>
-
         <table>
             <tr><th>Rules</th><th>Check</th></tr>
-            <tr><td>Entry/Exit Time (10:16 / 15:16 / 15:30)</td><td><input type="checkbox" class="rules"></td></tr>
-            <tr><td>RSI < 55 or > 29.5</td><td><input type="checkbox" class="rules"></td></tr>
-            <tr><td>ATM IV < 25</td><td><input type="checkbox" class="rules"></td></tr>
-            <tr><td>Result</td><td id="rulesResult" class="result-cell">FALSE</td></tr>
+            <tr><td>Entry Time</td><td>10:16, 15:16, 15:30</td><td><input type="checkbox" class="sec-entry"></td></tr>
+            <tr><td>RSI</td><td>&lt; 55 or &gt; 29.5</td><td><input type="checkbox" class="sec-entry"></td></tr>
+            <tr><td>ATM IV</td><td>&lt; 25</td><td><input type="checkbox" class="sec-entry"></td></tr>
+            <tr><td>Result</td><td></td><td id="secEntryResult" class="result-cell">FALSE</td></tr>
         </table>
 
+        <h2>Trade Check</h2>
         <table>
             <tr><th>Strikes</th><th>Check</th></tr>
-            <tr><td>Sell Delta 10–13</td><td><input type="checkbox" class="strikes"></td></tr>
-            <tr><td>Buy Delta 5–7</td><td><input type="checkbox" class="strikes"></td></tr>
-            <tr><td>OTM ≥ 500</td><td><input type="checkbox" class="strikes"></td></tr>
-            <tr><td>DTE ≥ 14</td><td><input type="checkbox" class="strikes"></td></tr>
-            <tr><td>Result</td><td id="strikesResult" class="result-cell">FALSE</td></tr>
+            <tr><td>Sell Delta</td><td>10 to 13</td><td><input type="checkbox" class="strikes"></td></tr>
+            <tr><td>Buy Delta</td><td>5 to 7</td><td><input type="checkbox" class="strikes"></td></tr>
+            <tr><td>OTM</td><td>&gt;=500</td><td><input type="checkbox" class="strikes"></td></tr>
+            <tr><td>DTE</td><td>&gt;=14</td><td><input type="checkbox" class="strikes"></td></tr>
+            <tr><td>Result</td><td></td><td id="strikesResult" class="result-cell">FALSE</td></tr>
         </table>
-
     </div>
 
-    <button class="back-btn" onclick="goBack()">← Back</button>
+    <!-- Secondary Rules (Exit) -->
+    <div id="secondaryExitArea" class="hidden">
+        <h2>Secondary Rules</h2>
+        <table>
+            <tr><th>Rules</th><th>Check</th></tr>
+            <tr><td>Exit Time</td><td>10:16, 15:16, 15:30</td><td><input type="checkbox" class="sec-exit"></td></tr>
+            <tr><td>RSI</td><td>&lt; 55 or &gt; 29.5</td><td><input type="checkbox" class="sec-exit"></td></tr>
+            <tr><td>Result</td><td></td><td id="secExitResult" class="result-cell">FALSE</td></tr>
+        </table>
+    </div>
+
 </div>
 
 <script>
+const homeScreen = document.getElementById("homeScreen");
+const contentArea = document.getElementById("contentArea");
+const backArrow = document.getElementById("backArrow");
+const sectionTitle = document.getElementById("sectionTitle");
+
 function openSection(type) {
-    document.getElementById("homeScreen").classList.add("hidden");
-    document.getElementById("contentArea").classList.remove("hidden");
+    // Hide home, show content
+    homeScreen.classList.add("hidden");
+    contentArea.classList.remove("hidden");
+    backArrow.style.display = "block";
 
-    document.getElementById("sectionTitle").textContent =
-        type.replace(/([A-Z])/g, " $1").trim();
+    sectionTitle.textContent = type.replace(/([A-Z])/g, " $1").trim();
 
-    // Hide all primary tables first
+    // Hide all primary tables
     document.querySelectorAll("[id^='primary-']").forEach(el => el.classList.add("hidden"));
 
-    // Show selected primary table
+    // Show primary table for this type
     document.getElementById("primary-" + type).classList.remove("hidden");
 
-    // Show secondary only for entries
+    // Show/hide secondary areas
     if (type === "bullishEntry" || type === "bearishEntry") {
-        document.getElementById("secondaryRulesArea").classList.remove("hidden");
+        document.getElementById("secondaryEntryArea").classList.remove("hidden");
+        document.getElementById("secondaryExitArea").classList.add("hidden");
     } else {
-        document.getElementById("secondaryRulesArea").classList.add("hidden");
+        document.getElementById("secondaryEntryArea").classList.add("hidden");
+        document.getElementById("secondaryExitArea").classList.remove("hidden");
     }
+
+    // Clear all checkboxes and results on open
+    clearAll();
+}
+
+function clearAll() {
+    document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+        cb.checked = false;
+    });
+    updateAllResults();
 }
 
 function goBack() {
-    document.getElementById("contentArea").classList.add("hidden");
-    document.getElementById("homeScreen").classList.remove("hidden");
+    contentArea.classList.add("hidden");
+    homeScreen.classList.remove("hidden");
+    backArrow.style.display = "none";
+    clearAll();
 }
+
+backArrow.addEventListener("click", goBack);
+backArrow.addEventListener("keypress", e => {
+    if(e.key === "Enter" || e.key === " ") {
+        goBack();
+        e.preventDefault();
+    }
+});
 
 function updateResult(className, resultId) {
     const boxes = document.querySelectorAll("." + className);
-    const result = [...boxes].every(b => b.checked);
+    const result = [...boxes].length > 0 && [...boxes].every(b => b.checked);
     const cell = document.getElementById(resultId);
     cell.textContent = result ? "TRUE" : "FALSE";
     cell.classList.toggle("true-bg", result);
 }
 
+function updateAllResults() {
+    updateResult("bullish-entry", "bullishEntryResult");
+    updateResult("bearish-entry", "bearishEntryResult");
+    updateResult("bullish-exit", "bullishExitResult");
+    updateResult("bearish-exit", "bearishExitResult");
+    updateResult("sec-entry", "secEntryResult");
+    updateResult("strikes", "strikesResult");
+    updateResult("sec-exit", "secExitResult");
+}
+
+// Update results on any checkbox change
 document.querySelectorAll("input[type=checkbox]").forEach(cb => {
-    cb.addEventListener("change", () => {
-        updateResult("bullish-entry", "bullishEntryResult");
-        updateResult("bearish-entry", "bearishEntryResult");
-        updateResult("bullish-exit", "bullishExitResult");
-        updateResult("bearish-exit", "bearishExitResult");
-        updateResult("rules", "rulesResult");
-        updateResult("strikes", "strikesResult");
-    });
+    cb.addEventListener("change", updateAllResults);
 });
 
-// PWA service worker
+// PWA service worker registration
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
 }
