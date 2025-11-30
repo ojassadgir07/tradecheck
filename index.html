@@ -61,6 +61,11 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
     <button class="menu-btn red-btn" onclick="openSection('bearishEntry')">Bearish Entry</button>
     <button class="menu-btn green-btn" onclick="openSection('bearishExit')">Bearish Exit</button>
   </div>
+  <div class="home-title">Rollover Trades</div>
+  <div class="button-row">
+    <button class="menu-btn green-btn" onclick="openRolloverSection('Bullish')">Bullish Rollover</button>
+    <button class="menu-btn red-btn" onclick="openRolloverSection('Bearish')">Bearish Rollover</button>
+  </div>
 </div>
 
 <div id="contentArea" class="hidden">
@@ -123,6 +128,42 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
       <tr><td>Buy Delta</td><td>5‑7 </td><td><input type="checkbox" class="strikes"></td></tr>
       <tr><td>OTM</td><td>Above 500 </td><td><input type="checkbox" class="strikes"></td></tr>
       <tr><td>DTE</td><td>Above 14 </td><td><input type="checkbox" class="strikes"></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Adding new section for Rollover -->
+<div id="rolloverSection" class="hidden">
+  <h2 id="rolloverTitle">Rollover</h2>
+
+  <!-- PRIMARY RULES tables -->
+  <table id="primary-rolloverBullish" class="hidden">
+    <tr><th>Rules</th><th>Condition</th><th>Check</th></tr>
+    <tr><td>Profit</td><td>Above 90%</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
+    <tr><td>RSI</td><td>Above 53</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
+    <tr><td>DTE</td><td>0-7</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
+    <tr><td>Result</td><td></td><td class="result-cell"></td></tr>
+  </table>
+
+  <table id="primary-rolloverBearish" class="hidden">
+    <tr><th>Rules</th><th>Condition</th><th>Check</th></tr>
+    <tr><td>Profit</td><td>Above 90%</td><td><input type="checkbox" class="rollover-bearish"></td></tr>
+    <tr><td>RSI</td><td>Below 31</td><td><input type="checkbox" class="rollover-bearish"></td></tr>
+    <tr><td>DTE</td><td>0-7</td><td><input type="checkbox" class="rollover-bearish"></td></tr>
+    <tr><td>Result</td><td></td><td class="result-cell"></td></tr>
+  </table>
+
+  <!-- SECONDARY RULES -->
+  <div id="secondaryRolloverArea" class="hidden">
+    <h3 id="secondaryRolloverHeader">Secondary Rules</h3>
+    <table>
+      <tr><th>Rules</th><th>Condition</th><th>Check</th></tr>
+      <tr>
+        <td>DTE</td><td>More than 7</td><td><input type="checkbox" class="sec-rollover" id="secRolloverDTE"></td>
+      </tr>
+      <tr>
+        <td>RSI</td><td id="secRolloverRSICond">Re-entry above 53</td><td><input type="checkbox" class="sec-rollover" id="secRolloverRSI"></td>
+      </tr>
     </table>
   </div>
 </div>
@@ -313,6 +354,63 @@ function showPopup(msg, autoClose=false, color="green"){
 }
 
 function closePopup(){ document.getElementById("popup").style.display="none"; goBack();}
+
+// Adding rollover logic
+function openRolloverSection(type){
+  currentSection=type;
+  document.getElementById("homeScreen").classList.add("hidden");
+  document.getElementById("rolloverSection").classList.remove("hidden");
+  document.getElementById("backArrow").style.display="block";
+  document.getElementById("rolloverTitle").textContent = type.replace(/([A-Z])/g," $1").replace(/^./, str=>str.toUpperCase());
+  document.querySelectorAll("[id^='primary-rollover']").forEach(t=>t.classList.add("hidden"));
+  document.getElementById("primary-rollover"+type).classList.remove("hidden");
+  document.getElementById("secondaryRolloverArea").classList.add("hidden");
+  clearAll();
+}
+
+function updateRolloverResults(cls){
+  const boxes=document.querySelectorAll("."+cls);
+  const allChecked = boxes.length>0 && [...boxes].every(b=>b.checked);
+
+  if(allChecked){
+    document.querySelector("#primary-rollover"+currentSection+" .result-cell").textContent="OK";
+    document.querySelector("#primary-rollover"+currentSection+" .result-cell").classList.add("row-true");
+    showPopup("Good for Rollover", false, "green");
+  } else {
+    const firstTwoChecked = boxes.length>2 && [...boxes].slice(0,2).every(b=>b.checked);
+    if(firstTwoChecked){
+      setupSecondaryRolloverRules();
+    }
+  }
+}
+
+function setupSecondaryRolloverRules(){
+  const header=document.getElementById("secondaryRolloverHeader");
+  header.textContent="Secondary Rules";
+  document.getElementById("secondaryRolloverArea").classList.remove("hidden");
+  document.getElementById("secondaryRolloverArea").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function updateSecondaryRolloverResults(){
+  const secDTEChecked=document.getElementById("secRolloverDTE").checked;
+  const secRSIChecked=document.getElementById("secRolloverRSI").checked;
+
+  if(secDTEChecked && secRSIChecked){
+    showPopup("Good for Rollover", false, "green");
+  }
+}
+
+// Event listeners for rollover checkboxes
+const rolloverCheckboxes = document.querySelectorAll("input[type=checkbox]");
+rolloverCheckboxes.forEach(cb=>{
+  cb.addEventListener("change", ()=>{ 
+      if(cb.classList.contains("rollover-bullish") || cb.classList.contains("rollover-bearish")){
+        updateRolloverResults(cb.classList.contains("rollover-bullish") ? "rollover-bullish" : "rollover-bearish");
+      } else if(cb.classList.contains("sec-rollover")){
+        updateSecondaryRolloverResults();
+      }
+  });
+});
 </script>
 
 </body>
