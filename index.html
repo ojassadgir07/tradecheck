@@ -4,12 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trade Check</title>
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+
+
+<!-- Apple Touch Icon for iOS -->
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+
+<!-- Manifest for PWA -->
 <link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#4caf50">
+
 <style>
-body { font-family: Arial, sans-serif; padding:15px; background:#f6f6f6; margin:0; text-align:center;}
-h1,h2,h3 { margin-bottom:20px; }
+body { font-family: Arial, sans-serif; padding-top:80px; background:#f6f6f6; margin:0; text-align:center;}
+header { position: fixed; top:0; left:0; width:100%; background:#4caf50; color:white; padding:15px; display:flex; align-items:center; justify-content:center; z-index:100; box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+header h1 { margin:0; font-size:1.5em; flex:1;}
+#backArrow { font-size:1.8em; cursor:pointer; display:none; margin-right:auto;}
+h2,h3 { margin-bottom:20px; }
 .button-row { display:flex; justify-content:center; gap:12px; margin-bottom:12px; }
 .menu-btn { flex:1; max-width:180px; padding:18px 0; font-size:1.2em; color:white; border:none; border-radius:12px; cursor:pointer;
            background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
@@ -24,19 +34,21 @@ th, td { padding:12px 10px; border:1px solid #ddd; text-align:center; }
 input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:pointer; }
 .row-true { background-color:#b7e1b0; }
 .amber-bg { background:#FFC107 !important; color:black; }
-#backArrow { position: fixed; top:10px; left:10px; font-size:2em; cursor:pointer; display:none; }
+.home-title { font-size:1.3em; margin-bottom:10px; font-weight:bold; }
 #popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:1000; }
 #popupContent { background:white; padding:30px 40px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.25); text-align:center; display:flex; flex-direction:column; align-items:center; max-width:90%; }
 #popupIcon { font-size:3.4em; margin-bottom:15px; }
 #popupText { font-size:1.4em; margin-bottom:20px; word-wrap: break-word; }
 #popupContent button { padding:16px 32px; font-size:1.1em; border:none; border-radius:10px; background:#4caf50; color:white; cursor:pointer; }
-.home-title { font-size:1.3em; margin-bottom:10px; font-weight:bold; }
 @media (max-width:400px){ .menu-btn{ font-size:1em; padding:14px;} input[type="checkbox"]{width:24px; height:24px; transform:scale(1.2);} }
 </style>
 </head>
 <body>
-<h1>Trade Check</h1>
-<div id="backArrow">&#8592;</div>
+
+<header>
+  <div id="backArrow">&#8592;</div>
+  <h1>Trade Check</h1>
+</header>
 
 <div id="homeScreen">
   <div class="home-title">Bullish Trades</div>
@@ -125,6 +137,7 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
 </div>
 
 <script>
+// --- JS logic copied exactly from your previous working version ---
 let currentSection="";
 function openSection(type){
   currentSection=type;
@@ -296,12 +309,11 @@ function showPopup(msg, autoClose=false, color="green"){
   }
 
   document.getElementById("popup").style.display="flex";
+  if(autoClose) setTimeout(()=>document.getElementById("popup").style.display="none",2000);
 }
 
-function closePopup(){
-  document.getElementById("popup").style.display="none";
-  goBack();
-}
+function closePopup(){ document.getElementById("popup").style.display="none"; goBack();}
 </script>
+
 </body>
 </html>
