@@ -353,7 +353,15 @@ function showPopup(msg, autoClose=false, color="green"){
   if(autoClose) setTimeout(()=>document.getElementById("popup").style.display="none",2000);
 }
 
-function closePopup(){ document.getElementById("popup").style.display="none"; goBack();}
+function closePopup(){ 
+  document.getElementById("popup").style.display="none"; 
+  goBack(); 
+  document.getElementById("contentArea").classList.add("hidden"); 
+  document.getElementById("rolloverSection").classList.add("hidden"); 
+  document.getElementById("secondaryArea").classList.add("hidden"); 
+  document.getElementById("secondaryRolloverArea").classList.add("hidden"); 
+  document.getElementById("homeScreen").classList.remove("hidden"); 
+}
 
 // Adding rollover logic
 function openRolloverSection(type){
