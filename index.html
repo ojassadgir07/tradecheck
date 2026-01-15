@@ -144,6 +144,7 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
     <tr><th>Rules</th><th>Condition</th><th>Check</th></tr>
     <tr><td>Profit</td><td>Above 90%</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
     <tr><td>RSI</td><td>60-73</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
+    <tr><td>RSI</td><td>70-73</td><td><input type="checkbox" class="rollover-bullish-caution"></td></tr>
     <tr><td>DTE</td><td>0-7</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
     <tr><td>Result</td><td></td><td class="result-cell"></td></tr>
   </table>
@@ -429,6 +430,16 @@ function updateRolloverResults(cls){
       setupSecondaryRolloverRules();
     }
   }
+  
+  // Check for 70-73 RSI and 0-7 DTE combination for Bullish rollover
+  if(currentSection === "Bullish"){
+    const rsiCautionBox = document.querySelector(".rollover-bullish-caution");
+    const dteBoxes = document.querySelectorAll(".rollover-bullish");
+    const dteBox = dteBoxes.length > 0 ? dteBoxes[dteBoxes.length - 1] : null;
+    if(rsiCautionBox && dteBox && rsiCautionBox.checked && dteBox.checked){
+      showPopup("Trade with Caution (Less Risk)", false, "orange");
+    }
+  }
 }
 
 function setupSecondaryRolloverRules(){
@@ -469,6 +480,8 @@ rolloverCheckboxes.forEach(cb=>{
   cb.addEventListener("change", ()=>{ 
       if(cb.classList.contains("rollover-bullish") || cb.classList.contains("rollover-bearish")){
         updateRolloverResults(cb.classList.contains("rollover-bullish") ? "rollover-bullish" : "rollover-bearish");
+      } else if(cb.classList.contains("rollover-bullish-caution")){
+        updateRolloverResults("rollover-bullish");
       } else if(cb.classList.contains("sec-rollover")){
         updateSecondaryRolloverResults();
       }
