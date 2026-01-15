@@ -145,6 +145,7 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
     <tr><td>Profit</td><td>Above 90%</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
     <tr><td>RSI</td><td>60-73</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
     <tr><td>RSI</td><td>70-73</td><td><input type="checkbox" class="rollover-bullish-caution"></td></tr>
+    <tr><td>RSI</td><td>Above 73</td><td><input type="checkbox" class="rollover-bullish-avoid"></td></tr>
     <tr><td>DTE</td><td>0-7</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
     <tr><td>Result</td><td></td><td class="result-cell"></td></tr>
   </table>
@@ -478,7 +479,11 @@ function updateSecondaryRolloverResults(){
 const rolloverCheckboxes = document.querySelectorAll("input[type=checkbox]");
 rolloverCheckboxes.forEach(cb=>{
   cb.addEventListener("change", ()=>{ 
-      if(cb.classList.contains("rollover-bullish") || cb.classList.contains("rollover-bearish")){
+      if(cb.classList.contains("rollover-bullish-avoid")){
+        if(cb.checked){
+          showPopup("Avoid Rollover", false, "red");
+        }
+      } else if(cb.classList.contains("rollover-bullish") || cb.classList.contains("rollover-bearish")){
         updateRolloverResults(cb.classList.contains("rollover-bullish") ? "rollover-bullish" : "rollover-bearish");
       } else if(cb.classList.contains("rollover-bullish-caution")){
         updateRolloverResults("rollover-bullish");
