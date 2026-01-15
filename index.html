@@ -74,7 +74,7 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
   <!-- PRIMARY RULES tables -->
   <table id="primary-bullishEntry" class="hidden">
     <tr><th>Rules</th><th>Condition</th><th>Check</th></tr>
-    <tr><td>RSI</td><td>Above 53 </td><td><input type="checkbox" class="bullish-entry"></td></tr>
+    <tr><td>RSI</td><td>Above 60 </td><td><input type="checkbox" class="bullish-entry"></td></tr>
     <tr><td>Price Close</td><td>Above 50 EMA </td><td><input type="checkbox" class="bullish-entry"></td></tr>
     <tr><td>Result</td><td></td><td class="result-cell"></td></tr>
   </table>
@@ -95,7 +95,7 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
 
   <table id="primary-bearishExit" class="hidden">
     <tr><th>Rules</th><th>Condition</th><th>Check</th></tr>
-    <tr><td>RSI</td><td>Above 53 </td><td><input type="checkbox" class="bearish-exit"></td></tr>
+    <tr><td>RSI</td><td>Above 60 </td><td><input type="checkbox" class="bearish-exit"></td></tr>
     <tr><td>Price Close</td><td>Above 50 EMA </td><td><input type="checkbox" class="bearish-exit"></td></tr>
     <tr><td>Result</td><td></td><td class="result-cell"></td></tr>
   </table>
@@ -143,7 +143,7 @@ input[type="checkbox"] { width:28px; height:28px; transform:scale(1.3); cursor:p
   <table id="primary-rolloverBullish" class="hidden">
     <tr><th>Rules</th><th>Condition</th><th>Check</th></tr>
     <tr><td>Profit</td><td>Above 90%</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
-    <tr><td>RSI</td><td>Above 53</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
+    <tr><td>RSI</td><td>Above 60</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
     <tr><td>DTE</td><td>0-7</td><td><input type="checkbox" class="rollover-bullish"></td></tr>
     <tr><td>Result</td><td></td><td class="result-cell"></td></tr>
   </table>
@@ -267,11 +267,11 @@ secTime.addEventListener("change", () => {
         switch(currentSection){
             case "bullishEntry":
                 secRsiRow.querySelector("td:first-child").textContent = "RSI";
-                secRsiRow.querySelector("td:nth-child(2)").textContent = "Below 55 ";
+                secRsiRow.querySelector("td:nth-child(2)").textContent = "Below 60.5 ";
                 secGapRow.querySelector("td:first-child").textContent = "Gap";
                 secGapRow.querySelector("td:nth-child(2)").textContent = "Gap up >1% and prev close >2%";
                 secNoneCol1.textContent = "RSI";
-                secNoneCol2.textContent = "Above 55 ";
+                secNoneCol2.textContent = "Above 60.5 ";
                 break;
             case "bearishEntry":
                 secRsiRow.querySelector("td:first-child").textContent = "RSI";
@@ -289,9 +289,9 @@ secTime.addEventListener("change", () => {
                 break;
             case "bearishExit":
                 secRsiRow.querySelector("td:first-child").textContent = "RSI";
-                secRsiRow.querySelector("td:nth-child(2)").textContent = "Below 55 ";
+                secRsiRow.querySelector("td:nth-child(2)").textContent = "Below 60.5 ";
                 secNoneCol1.textContent = "RSI";
-                secNoneCol2.textContent = "Above 55 ";
+                secNoneCol2.textContent = "Above 60.5 ";
                 break;
             default:
                 secNoneCol1.textContent = "RSI";
@@ -440,7 +440,7 @@ function setupSecondaryRolloverRules(){
     rsiCondElem.textContent = "Re-entry below 31";
     gapCondElem.textContent = "Gap down >1% and prev close >2%";
   } else {
-    rsiCondElem.textContent = "Re-entry above 53";
+    rsiCondElem.textContent = "Re-entry above 60";
     gapCondElem.textContent = "Gap up >1% and prev close >2%";
   }
   document.getElementById("secondaryRolloverArea").classList.remove("hidden");
